@@ -1,80 +1,129 @@
 // src/components/MeshBackground.jsx
 // ============================================================
-// Dark Cosmic Gradient Mesh — Vibrant Blue, Purple, and Magenta
-// Exactly matching the reference template
+// Dark Cosmic Gradient Mesh
+// Dasar hampir hitam (#03030c) dengan "nebula" violet, indigo,
+// magenta tipis & teal yang redup, ditambah bintang berkelip
+// dan vignette supaya tepi layar tetap gelap.
 // ============================================================
 
+import { useMemo } from "react";
+
+// Generator acak deterministik → posisi bintang selalu sama
+function mulberry32(seed) {
+  let a = seed;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const STAR_COUNT = 90;
+
 export default function MeshBackground() {
+  const stars = useMemo(() => {
+    const rand = mulberry32(2026);
+    return Array.from({ length: STAR_COUNT }, (_, i) => {
+      const r = rand();
+      return {
+        id: i,
+        x: rand() * 100,
+        y: rand() * 100,
+        size: r > 0.92 ? 2.6 : r > 0.6 ? 1.7 : 1.1,
+        o: 0.35 + rand() * 0.55,
+        dur: 3 + rand() * 5,
+        delay: rand() * 6,
+      };
+    });
+  }, []);
+
   return (
     <div
       aria-hidden="true"
-      className="noise-overlay fixed inset-0 -z-10 overflow-hidden pointer-events-none select-none"
-      style={{ backgroundColor: "#02030d" }}
+      className="noise-overlay absolute inset-0 -z-10 overflow-hidden pointer-events-none select-none"
+      style={{ backgroundColor: "#03030c" }}
     >
-      {/* ── Layer 1: Vibrant Cosmic Gradient Mesh ── */}
+      {/* ── Layer 1: Gradient mesh (gelap, redup) ── */}
       <div
         className="absolute inset-0"
         style={{
           background: `
-            /* Neon Magenta / Hot Pink in top-right corner */
-            radial-gradient(circle 50vw at 95% 15%, #d946ef 0%, #a21caf 40%, transparent 75%),
-            /* Electric Cyan accent leaking in near top */
-            radial-gradient(circle 35vw at 78% 6%, #38bdf8 0%, #0284c7 35%, transparent 65%),
-            /* Intense Royal Violet spine stretching diagonally */
-            radial-gradient(ellipse 70vw 55vw at 72% 42%, #7c3aed 0%, #4f46e5 45%, transparent 75%),
-            /* Brilliant Electric Blue glowing band */
-            radial-gradient(ellipse 75vw 55vw at 50% 60%, #0055ff 0%, #1e40af 50%, transparent 80%),
-            /* Deep Blue ambient foundation */
-            radial-gradient(ellipse 60vw 50vw at 28% 78%, #0369a1 0%, #0c1c4d 50%, transparent 75%),
-            /* Deep Dark Navy base */
-            linear-gradient(135deg, #02030a 0%, #04081c 45%, #08031a 100%)
+            radial-gradient(ellipse 60vw 50vw at 12% 8%,  rgba(88, 28, 135, 0.60) 0%, transparent 70%),
+            radial-gradient(ellipse 55vw 45vw at 92% 14%, rgba(131, 24, 112, 0.38) 0%, transparent 70%),
+            radial-gradient(ellipse 70vw 55vw at 85% 88%, rgba(30, 58, 138, 0.58) 0%, transparent 70%),
+            radial-gradient(ellipse 55vw 42vw at 14% 92%, rgba(14, 90, 120, 0.34) 0%, transparent 70%),
+            radial-gradient(ellipse 50vw 45vw at 48% 48%, rgba(49, 46, 129, 0.40) 0%, transparent 72%),
+            linear-gradient(160deg, #03030c 0%, #070520 52%, #04030f 100%)
           `,
         }}
       />
 
-      {/* ── Layer 2: Moving Ambient Luminous Blobs (GPU-friendly) ── */}
-      {/* Blob 1: Electric Blue luminous surge */}
+      {/* ── Layer 2: Blob bercahaya yang bergerak pelan ── */}
       <div
         className="blob-1 absolute rounded-full"
         style={{
-          width: "55vw",
-          height: "55vw",
-          top: "25%",
-          left: "22%",
-          background:
-            "radial-gradient(circle, #2563eb 0%, #1d4ed8 45%, transparent 75%)",
-          filter: "blur(70px)",
-          opacity: 0.75,
+          width: "46vw",
+          height: "46vw",
+          top: "30%",
+          left: "18%",
+          background: "radial-gradient(circle, #3730a3 0%, #1e1b4b 50%, transparent 72%)",
+          filter: "blur(80px)",
+          opacity: 0.55,
         }}
       />
-
-      {/* Blob 2: Royal Violet glow */}
       <div
         className="blob-2 absolute rounded-full"
         style={{
-          width: "50vw",
-          height: "50vw",
-          top: "12%",
-          right: "8%",
-          background:
-            "radial-gradient(circle, #8b5cf6 0%, #6d28d9 45%, transparent 75%)",
-          filter: "blur(75px)",
-          opacity: 0.8,
+          width: "40vw",
+          height: "40vw",
+          top: "6%",
+          right: "6%",
+          background: "radial-gradient(circle, #6d28d9 0%, #3b0764 50%, transparent 72%)",
+          filter: "blur(85px)",
+          opacity: 0.5,
         }}
       />
-
-      {/* Blob 3: Hot Neon Magenta glow in upper-right */}
       <div
         className="blob-3 absolute rounded-full"
         style={{
-          width: "42vw",
-          height: "42vw",
-          top: "-5%",
-          right: "-5%",
+          width: "32vw",
+          height: "32vw",
+          bottom: "-6%",
+          left: "34%",
+          background: "radial-gradient(circle, #be185d 0%, #581c87 50%, transparent 72%)",
+          filter: "blur(80px)",
+          opacity: 0.28,
+        }}
+      />
+
+      {/* ── Layer 3: Bintang ── */}
+      <div className="absolute inset-0">
+        {stars.map((s) => (
+          <span
+            key={s.id}
+            className="star"
+            style={{
+              left: `${s.x}%`,
+              top: `${s.y}%`,
+              width: s.size,
+              height: s.size,
+              "--o": s.o,
+              "--dur": `${s.dur}s`,
+              "--delay": `${s.delay}s`,
+              boxShadow: s.size > 2 ? "0 0 6px 1px rgba(196, 181, 253, 0.7)" : "none",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* ── Layer 4: Vignette — menjaga tepi tetap gelap ── */}
+      <div
+        className="absolute inset-0"
+        style={{
           background:
-            "radial-gradient(circle, #f43f5e 0%, #d946ef 50%, transparent 75%)",
-          filter: "blur(65px)",
-          opacity: 0.85,
+            "radial-gradient(ellipse at 50% 45%, transparent 35%, rgba(2, 2, 10, 0.72) 100%)",
         }}
       />
     </div>

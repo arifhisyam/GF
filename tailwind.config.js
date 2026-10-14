@@ -19,8 +19,8 @@ export default {
         },
       },
       fontFamily: {
-        display: ['"Bricolage Grotesque"', "system-ui", "sans-serif"],
-        body: ['"Plus Jakarta Sans"', "system-ui", "sans-serif"],
+        display: ['"Fraunces"', "Georgia", "serif"],
+        body: ['"Manrope"', "system-ui", "sans-serif"],
       },
     },
   },

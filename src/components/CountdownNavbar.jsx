@@ -2,7 +2,7 @@
 // Countdown displayed as a top navigation bar
 
 import { useElapsed } from "../hooks/useElapsed";
-import { Heart } from "lucide-react";
+import { Heart, CalendarHeart, Sparkles, Hourglass } from "lucide-react";
 
 function TimeUnit({ value, label }) {
   return (
@@ -10,15 +10,16 @@ function TimeUnit({ value, label }) {
       <span
         className="tabular-nums font-bold text-white leading-none"
         style={{
-          fontFamily: "var(--font-display)",
-          fontSize: "clamp(1rem, 2.2vw, 1.5rem)",
+          fontFamily: "var(--font-body)",
+          fontWeight: 700,
+          fontSize: "clamp(1rem, 2.2vw, 1.45rem)",
         }}
       >
         {String(value).padStart(2, "0")}
       </span>
       <span
         className="uppercase tracking-widest text-white/40"
-        style={{ fontFamily: "var(--font-body)", fontSize: "0.45rem" }}
+        style={{ fontFamily: "var(--font-body)", fontSize: "0.56rem", fontWeight: 600 }}
       >
         {label}
       </span>
@@ -40,8 +41,14 @@ export default function CountdownNavbar({ startDate, names }) {
 
   return (
     <nav
-      className="glass-nav flex-shrink-0 flex items-center justify-between px-4 md:px-8 gap-4"
-      style={{ height: "var(--navbar-h)", zIndex: 50 }}
+      className="glass-nav flex-shrink-0 px-4 md:px-8 gap-4"
+      style={{
+        height: "var(--navbar-h)",
+        zIndex: 50,
+        display: "grid",
+        gridTemplateColumns: "1fr auto 1fr",
+        alignItems: "center",
+      }}
       aria-label="Navbar — hitungan waktu bersama"
     >
       {/* Left: couple names */}
@@ -57,7 +64,7 @@ export default function CountdownNavbar({ startDate, names }) {
         />
         <span
           className="text-white/80 font-bold truncate"
-          style={{ fontSize: "clamp(0.55rem, 1.2vw, 0.8rem)", letterSpacing: "0.01em" }}
+          style={{ fontSize: "clamp(0.75rem, 1.3vw, 0.95rem)", fontStyle: "italic", fontWeight: 600 }}
         >
           {names[0].split(" ")[0]}
           <span className="text-pink-400 mx-1">&amp;</span>
@@ -68,9 +75,15 @@ export default function CountdownNavbar({ startDate, names }) {
       {/* Center: time units */}
       <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
         <span
-          className="hidden sm:block text-white/40 mr-1"
-          style={{ fontFamily: "var(--font-body)", fontSize: "0.6rem" }}
+          className="hidden sm:flex items-center text-white/45 mr-1"
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: "0.72rem",
+            fontWeight: 500,
+            gap: 5,
+          }}
         >
+          <Hourglass size={13} strokeWidth={2} className="text-purple-300" aria-hidden="true" />
           {isPast ? "Bersama" : "Menuju"}
         </span>
         {isPast && (
@@ -91,19 +104,25 @@ export default function CountdownNavbar({ startDate, names }) {
       {/* Right: total days + anniversary info */}
       <div
         className="hidden md:flex flex-col items-end gap-0.5 flex-shrink-0"
-        style={{ fontFamily: "var(--font-body)", fontSize: "0.58rem" }}
+        style={{ fontFamily: "var(--font-body)", fontSize: "0.7rem", justifySelf: "end" }}
       >
-        <span className="text-white/50">
-          Total{" "}
-          <span className="text-blue-400 font-semibold">
-            {totalDays.toLocaleString("id-ID")}
-          </span>{" "}
-          hari 💙
+        <span className="text-white/55" style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+          <CalendarHeart size={13} strokeWidth={2} className="text-blue-400" aria-hidden="true" />
+          <span>
+            Total{" "}
+            <span className="text-blue-400 font-semibold">
+              {totalDays.toLocaleString("id-ID")}
+            </span>{" "}
+            hari
+          </span>
         </span>
         {isPast && (
-          <span className="text-white/35">
-            Anniversary{" "}
-            <span className="text-pink-400 font-semibold">{nextAnnivDays}</span> hari lagi ✨
+          <span className="text-white/40" style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+            <Sparkles size={13} strokeWidth={2} className="text-pink-400" aria-hidden="true" />
+            <span>
+              Anniversary{" "}
+              <span className="text-pink-400 font-semibold">{nextAnnivDays}</span> hari lagi
+            </span>
           </span>
         )}
       </div>
