@@ -1,0 +1,97 @@
+/* src/components/MemoryPage.css
+   Sengaja TIDAK memakai utilitas Tailwind untuk margin/padding, karena reset
+   di index.css (unlayered) mengalahkannya. Semua spasi diatur di sini. */
+
+.mp { position: relative; isolation: isolate; min-height: 100vh; width: 100%; color: #fff; }
+
+/* ── Bilah atas ── */
+.mp-bar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center;
+  padding: 14px 20px;
+  background: linear-gradient(to bottom, rgba(3,3,12,.92), rgba(3,3,12,0));
+}
+.mp-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px; border-radius: 999px; cursor: pointer;
+  font: 600 .86rem var(--font-body); color: #fff;
+  background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.16);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  transition: background .2s, transform .2s;
+}
+.mp-back:hover { background: rgba(255,255,255,.18); transform: translateX(-2px); }
+.mp-back:focus-visible, .mp-photo-btn:focus-visible { outline: 2px solid #a5b4fc; outline-offset: 3px; }
+
+/* ── Kolom isi ── */
+.mp-main { position: relative; z-index: 10; width: 100%; max-width: 980px; margin: 0 auto; padding: 24px 20px 96px; }
+
+/* ── Judul halaman ── */
+.mp-hero { text-align: center; max-width: 640px; margin: 0 auto 72px; animation: mp-in .7s ease both; }
+.mp-kicker { font: 600 .82rem var(--font-body); letter-spacing: .04em; margin-bottom: 14px; }
+.mp-title {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(2.1rem, 6.5vw, 3.6rem); line-height: 1.08; letter-spacing: -.02em;
+  margin-bottom: 18px; text-wrap: balance;
+}
+.mp-intro { font: 400 1.02rem/1.7 var(--font-body); color: rgba(255,255,255,.7); max-width: 52ch; margin: 0 auto; }
+
+/* ── Satu bab ── */
+.mp-chapter { padding: 56px 0; border-top: 1px solid rgba(255,255,255,.09); }
+.mp-chapter:first-of-type { border-top: 0; padding-top: 0; }
+.mp-ch-head { display: flex; gap: 18px; align-items: flex-start; max-width: 640px; margin: 0 auto 36px; }
+.mp-ch-num {
+  flex: none; width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center;
+  font: 600 1.1rem var(--font-display);
+}
+.mp-ch-date { font: 600 .8rem var(--font-body); color: rgba(255,255,255,.55); margin-bottom: 4px; }
+.mp-ch-title { font: 600 clamp(1.4rem, 3.6vw, 1.9rem)/1.2 var(--font-display); letter-spacing: -.01em; margin-bottom: 10px; }
+.mp-ch-text { font: 400 1rem/1.75 var(--font-body); color: rgba(255,255,255,.82); }
+
+/* ── Kumpulan foto ── */
+.mp-grid { --gap: 22px; --cols: 3; display: flex; flex-wrap: wrap; justify-content: center; gap: 30px var(--gap); }
+.mp-grid > * { flex: 0 0 calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols)); min-width: 0; }
+@media (max-width: 720px) { .mp-grid { --cols: 2; --gap: 14px; row-gap: 22px; } }
+
+/* ── Kartu foto (gaya polaroid) ── */
+.mp-card {
+  margin: 0; padding: 10px 10px 14px; border-radius: 14px;
+  background: linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+  border: 1px solid rgba(255,255,255,.13);
+  box-shadow: 0 14px 30px -12px rgba(0,0,0,.7);
+  transform: rotate(var(--tilt, 0deg));
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.mp-card:hover { transform: rotate(0deg) translateY(-3px); box-shadow: 0 20px 36px -12px rgba(0,0,0,.8); }
+.mp-grid > .mp-card:nth-child(odd)  { --tilt: -1deg; }
+.mp-grid > .mp-card:nth-child(even) { --tilt: 1deg; }
+
+.mp-frame { display: block; width: 100%; aspect-ratio: 4 / 5; border-radius: 8px; overflow: hidden; background: rgba(3,3,12,.55); }
+.mp-photo-btn { padding: 0; border: 0; cursor: zoom-in; }
+.mp-frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.mp-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center;
+  border: 1.5px dashed var(--accent-line); background: var(--accent-soft);
+  font: 500 .74rem/1.4 var(--font-body); color: rgba(255,255,255,.5); padding: 12px;
+}
+.mp-empty b { font: 700 .8rem var(--font-body); color: var(--accent); }
+
+/* Ruang kata-kata di bawah foto */
+.mp-caption { margin: 12px 4px 0; min-height: 3.4em; font: 400 .9rem/1.55 var(--font-body); color: rgba(255,255,255,.88); }
+.mp-caption.is-empty {
+  color: rgba(255,255,255,.35); font-style: italic;
+  border-bottom: 1px dashed rgba(255,255,255,.2);
+}
+
+.mp-closing { margin: 64px auto 0; max-width: 520px; text-align: center; font: italic 400 1.15rem/1.7 var(--font-display); color: rgba(255,255,255,.8); }
+
+/* ── Perbesar foto ── */
+.mp-zoom { position: fixed; inset: 0; z-index: 30; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; background: rgba(0,0,0,.88); cursor: zoom-out; }
+.mp-zoom img { max-width: 100%; max-height: 80vh; border-radius: 12px; object-fit: contain; }
+.mp-zoom p { max-width: 60ch; text-align: center; font: 400 .95rem/1.6 var(--font-body); color: rgba(255,255,255,.85); }
+
+@keyframes mp-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .mp-hero { animation: none; }
+  .mp-card, .mp-back { transition: none; }
+}

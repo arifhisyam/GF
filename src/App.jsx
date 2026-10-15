@@ -13,7 +13,8 @@ import Portrait from "./components/Portrait";
 import OrbitCards from "./components/OrbitCards";
 import CountdownNavbar from "./components/CountdownNavbar";
 import SectionOverlay from "./components/SectionOverlay";
-import { names, startDate, portrait, cards } from "./content";
+import MemoryPage from "./components/MemoryPage";
+import { names, startDate, portrait, cards, pages } from "./content";
 import { PHOTO_W, PHOTO_H, STAGE_W, STAGE_H, ORIGIN, cardsCenterX } from "./layout";
 
 const CARDS_CX = cardsCenterX(cards.length);
@@ -56,7 +57,20 @@ function useMediaQuery(query) {
   return matches;
 }
 
+// Routing sederhana berbasis hash: "#/kenangan/2" → halaman kartu 2
+function useHashRoute() {
+  const read = () => window.location.hash.replace(/^#/, "");
+  const [route, setRoute] = useState(read);
+  useEffect(() => {
+    const onChange = () => setRoute(read());
+    window.addEventListener("hashchange", onChange);
+    return () => window.removeEventListener("hashchange", onChange);
+  }, []);
+  return route;
+}
+
 export default function App() {
+  const route = useHashRoute();
   const portraitRef = useRef(null);
   const mainRef = useRef(null);
   const [activeCard, setActiveCard] = useState(null);
@@ -67,12 +81,18 @@ export default function App() {
   const scale = useFitScale(mainRef);
 
   const handleCardClick = (card, ox, oy) => {
+    if (card.page && pages[card.page]) {
+      window.location.hash = card.page;
+      return;
+    }
     setOriginX(ox);
     setOriginY(oy);
     setActiveCard(card);
   };
 
   const handleClose = () => setActiveCard(null);
+
+  const pageCard = cards.find((c) => c.page === route && pages[c.page]);
 
   return (
     // `isolate` membuat stacking context sendiri → mesh (-z-10) tampil
@@ -146,6 +166,19 @@ export default function App() {
           </div>
         )}
       </main>
+
+      {/* Layer 6: Halaman penuh untuk kartu ber-`page` (beranda tetap hidup di bawahnya) */}
+      {pageCard && (
+        <div className="fixed inset-0 overflow-y-auto" style={{ zIndex: 200, background: "#03030c" }}>
+          <MemoryPage
+            card={pageCard}
+            page={pages[pageCard.page]}
+            onBack={() => {
+              window.location.hash = "";
+            }}
+          />
+        </div>
+      )}
 
       {/* Layer 5: Overlay kenangan layar penuh */}
       <SectionOverlay
